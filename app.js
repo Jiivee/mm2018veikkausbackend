@@ -33,7 +33,7 @@ app.use('/matches', matches);
 app.use('/addmatch', addMatch);
 
 
-/*
+
 mongoose.connect('mongodb://localhost/fv', function(err, db) {
 if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
@@ -41,8 +41,8 @@ if (err) {
     console.log('Connection established');
   }
 });
-*/
-mongoose.connect('mongodb://heroku_n8tthvx3:gg52807ergarga789k8f20jmp1@ds033285.mongolab.com:33285/heroku_n8tthvx3');
+
+//mongoose.connect('mongodb://heroku_n8tthvx3:gg52807ergarga789k8f20jmp1@ds033285.mongolab.com:33285/heroku_n8tthvx3');
 
 
 port = process.env.PORT || 3000;

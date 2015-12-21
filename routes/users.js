@@ -1,5 +1,5 @@
 /**
-	Get: Shows all the users in the db.  
+	Get: Shows all the users in the db.
 **/
 
 var express = require('express');
@@ -8,7 +8,7 @@ var router = express.Router();
 
 
 router.get('/', function(req, res, next) {
-  mongoose.model('users').find(function(err, users) {
+  mongoose.model('user').find(function(err, users) {
   	res.send(users);
   })
 });
