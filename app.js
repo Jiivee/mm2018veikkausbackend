@@ -7,7 +7,13 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var fs = require('fs');
 
+
+var cors = cors = require('cors');
+
 var app = express();
+
+//CORS ENABLED TO EVERYTHING!!!!
+app.use(cors());
 
 //var routes = require('./routes/index');
 var users = require('./routes/users');
