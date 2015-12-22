@@ -10,7 +10,9 @@ var userSchema = new Schema({
 var teamSchema = new Schema({
   name: String,
   short_name: String,
-  group: String,
+  group: { type: Schema.Types.ObjectId, ref: 'Group' },
+  matches: [{ type: Schema.Types.ObjectId, ref: 'Match' }],
+  flag: String
 });
 
 var groupSchema = new Schema({
@@ -19,6 +21,7 @@ var groupSchema = new Schema({
 });
 
 var matchSchema = new Schema({
+  match_number: Number,
   home_team: { type: Schema.Types.ObjectId, ref: 'Team' },
   away_team: { type: Schema.Types.ObjectId, ref: 'Team' },
   score: {
@@ -40,8 +43,23 @@ var matchbetSchema = new Schema({
   mark_bet: String
 });
 
-var MatchBet = mongoose.model('matchbet', matchbetSchema);
-var User = mongoose.model('user', userSchema);
+var tournamentSchema = new Schema({
+  name: String,
+  owner: { type: Schema.Types.ObjectId, ref: 'User' },
+  users: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  game_modes: {
+    '1x2': Boolean,
+    mark: Boolean,
+    eighth_finals: Boolean,
+    quater_finals: Boolean,
+    semi_finals: Boolean,
+    finals: Boolean,
+    winner: Boolean
+  }
+});
+
+mongoose.model('matchbet', matchbetSchema);
+mongoose.model('user', userSchema);
 var Team = mongoose.model('team', teamSchema);
-var Match = mongoose.model('match', matchSchema);
-var Group = mongoose.model('group', groupSchema);
+mongoose.model('match', matchSchema);
+mongoose.model('group', groupSchema);
