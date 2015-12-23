@@ -10,7 +10,7 @@ var fs = require('fs');
 
 var cors = require('cors');
 
-/*
+
 mongoose.connect('mongodb://localhost/fv', function(err, db) {
 if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
@@ -18,9 +18,9 @@ if (err) {
     console.log('Connection established');
   }
 });
-*/
 
-mongoose.connect('mongodb://heroku_n8tthvx3:gg52807ergarga789k8f20jmp1@ds033285.mongolab.com:33285/heroku_n8tthvx3');
+
+//mongoose.connect('mongodb://heroku_n8tthvx3:gg52807ergarga789k8f20jmp1@ds033285.mongolab.com:33285/heroku_n8tthvx3');
 
 //load all files in models dir
 fs.readdirSync(__dirname + '/models').forEach(function(filename){
