@@ -14,4 +14,16 @@ router.get('/', function(req, res, next) {
   })
 });
 
+router.get('/id/:id', function(req, res, next) {
+  mongoose.model('match').findOne({_id: req.params.id}).populate(populateQuery).exec(function(err, matches) {
+    res.send(matches);
+  })
+});
+
+router.get('/number/:number', function(req, res, next) {
+  mongoose.model('match').findOne({'match_number': req.params.number}).populate(populateQuery).exec(function(err, matches) {
+    res.send(matches);
+  })
+});
+
 module.exports = router;
