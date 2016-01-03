@@ -2,9 +2,10 @@ var mongoose = require('mongoose');
 var Schema 	= mongoose.Schema;
 
 var userSchema = new Schema({
-  name: String,
+  name: { type: String, unique: true},
   password: String,
-  email: String,
+  email: { type: String, unique: true},
+  isVerified: { type: Boolean, dafault: false},
   tournaments: [{
     tournament: { type: Schema.Types.ObjectId, ref: 'Tournament' },
     match_bets: [{ type: Schema.Types.ObjectId, ref: 'MatchBet' }]
@@ -38,13 +39,12 @@ var matchSchema = new Schema({
 });
 
 var matchbetSchema = new Schema({
-  match_id: String,
   match: { type: Schema.Types.ObjectId, ref: 'Match' },
-  score_bet: {
+  score: {
     home: Number,
     away: Number
   },
-  mark_bet: String
+  mark: String
 });
 
 var tournamentSchema = new Schema({

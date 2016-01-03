@@ -14,7 +14,7 @@ router.get('/', function(req, res, next) {
   })
 });
 
-router.get('/id/:id', function(req, res, next) {
+router.get('/:id', function(req, res, next) {
   mongoose.model('match').findOne({_id: req.params.id}).populate(populateQuery).exec(function(err, matches) {
     res.send(matches);
   })

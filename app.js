@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var fs = require('fs');
 
+var jwt    = require('jsonwebtoken'); // used to create, sign, and verify tokens
+var config = require('./config');
 
 var cors = require('cors');
 
@@ -34,7 +36,11 @@ var users = require('./routes/users');
 var matches = require('./routes/matches');
 var teams = require('./routes/teams');
 var groups = require('./routes/groups');
-var addMatch = require('./routes/addmatch');
+var tournaments = require('./routes/tournaments');
+var matchbets = require('./routes/matchbets');
+var authenticate = require('./routes/authenticate');
+var register = require('./routes/register');
+var verifyemail = require('./routes/verifyemail');
 
 var app = express();
 
@@ -52,7 +58,11 @@ app.use('/users', users);
 app.use('/matches', matches);
 app.use('/teams', teams);
 app.use('/groups', groups);
-app.use('/addmatch', addMatch);
+app.use('/tournaments', tournaments);
+app.use('/matchbets', matchbets);
+app.use('/authenticate', authenticate);
+app.use('/register', register);
+app.use('/verifyemail', verifyemail);
 
 
 
