@@ -12,7 +12,7 @@ var config = require('./config');
 
 var cors = require('cors');
 
-
+/*
 mongoose.connect('mongodb://localhost/fv', function(err, db) {
 if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
@@ -20,9 +20,9 @@ if (err) {
     console.log('Connection established');
   }
 });
+*/
 
-
-//mongoose.connect('mongodb://heroku_n8tthvx3:gg52807ergarga789k8f20jmp1@ds033285.mongolab.com:33285/heroku_n8tthvx3');
+mongoose.connect('mongodb://heroku_n8tthvx3:gg52807ergarga789k8f20jmp1@ds033285.mongolab.com:33285/heroku_n8tthvx3');
 
 //load all files in models dir
 fs.readdirSync(__dirname + '/models').forEach(function(filename){
@@ -69,7 +69,7 @@ app.use('/verifyemail', verifyemail);
 
 
 
-port = process.env.PORT || 3000;
+port = process.env.PORT || 3002;
 app.listen(port, function() {
   console.log("Listening on port number: ", port);
 });
