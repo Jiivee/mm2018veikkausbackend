@@ -9,8 +9,6 @@ var mongoose = require('mongoose');
 //ONLY Allow access for authenticated user:
 var router = require('../auth.js');
 
-
-
 var populateQuery = [
   {path: 'tournaments.tournament', model: mongoose.model('tournament')},
   {path: 'tournaments.match_bets', model: mongoose.model('matchbet')}

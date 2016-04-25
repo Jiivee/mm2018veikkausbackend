@@ -40,7 +40,7 @@ router.get('/:id', function(req, res, next) {
 
 //create new tournament
 router.post('/', function(req, res, next) {
-  var owner_id = req.body.owner._id;
+  var owner_id = req.body.owner;
   var tournament = {
     name: req.body.name,
     owner: req.body.owner,
@@ -100,7 +100,6 @@ router.post('/', function(req, res, next) {
       });
       res.sendStatus(201);
       console.log('added: ' + tournament);
-      email.sendMail();
     }
   });
 });

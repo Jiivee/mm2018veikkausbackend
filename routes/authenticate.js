@@ -7,6 +7,8 @@ var config = require('../config');
 
 
 router.post('/', function(req, res) {
+  console.log('hello');
+  console.log(req.headers);
   console.log(req.body);
   // find the user
   mongoose.model('user').findOne({email: req.body.email}, function(err, user) {
