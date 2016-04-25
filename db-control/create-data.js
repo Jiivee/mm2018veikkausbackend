@@ -5,7 +5,8 @@
 var mongoose = require('mongoose');
 var Schema  = mongoose.Schema;
 var fs = require('fs');
-
+var async = require('async');
+/*
 mongoose.connect('mongodb://localhost/fv', function(err, db) {
 if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
@@ -13,20 +14,31 @@ if (err) {
     console.log('Connection established');
   }
 });
-
-//mongoose.connect('mongodb://heroku_n8tthvx3:gg52807ergarga789k8f20jmp1@ds033285.mongolab.com:33285/heroku_n8tthvx3');
+*/
+mongoose.connect('mongodb://heroku_n8tthvx3:gg52807ergarga789k8f20jmp1@ds033285.mongolab.com:33285/heroku_n8tthvx3');
 
 //load all files in models dir
-fs.readdirSync('C:/Users/Joni/Documents/futisveikkaus/backend/models/').forEach(function(filename){
+fs.readdirSync('../models/').forEach(function(filename){
   if(~filename.indexOf('.js')) {
-    require('C:/Users/Joni/Documents/futisveikkaus/backend/models/' + filename)
+    require('../models/' + filename)
   }
 })
 
-//Greate Teams
-var Team = mongoose.model('team');
 
+var Team = mongoose.model('team');
+var Group = mongoose.model('group');
+var Match = mongoose.model('match');
+
+//Delete previous data
 Team.remove('team', function(err, result) {
+  if (err) return handleError(err);
+});
+
+Group.remove('group', function(err, result) {
+  if (err) return handleError(err);
+});
+
+Match.remove('match', function(err, result) {
   if (err) return handleError(err);
 });
 
@@ -57,19 +69,6 @@ var ukr = new Team({name: 'Ukraine', short_name: 'UKR', flag: ''});
 
 var teams = [fra, eng, cze, isl, aut, nir, por, esp, che, ita, bel, wal, rou, alb, ger, pol, rus, svk, cro, tur, hun, irl, swe, ukr];
 
-for(var i in teams) {
-  teams[i].save(function (err) {
-    if (err) return handleError(err);
-  })
-};
-
-
-//Create Groups
-var Group = mongoose.model('group');
-
-Group.remove('group', function(err, result) {
-  if (err) return handleError(err);
-});
 
 var group_a = new Group({name: 'A', teams: [alb, fra, rou, che]});
 var group_b = new Group({name: 'B', teams: [eng, rus, svk, wal]});
@@ -79,38 +78,6 @@ var group_e = new Group({name: 'E', teams: [bel, ita, irl, swe]});
 var group_f = new Group({name: 'F', teams: [aut, hun, isl, por]});
 
 var groups = [group_a, group_b, group_c, group_d, group_e, group_f];
-
-for(var i in groups) {
-  groups[i].save(function (err) {
-    if (err) return handleError(err);
-  })
-};
-
-
-//Update teams with groups
-for (var i in teams) {
-  for (var j in groups) {
-    for (var k in groups[j].teams) {
-      if (groups[j].teams[k] === teams[i]._id) {
-        teams[i].group = groups[j];
-      }
-    }
-  }
-}
-for(var i in teams) {
-  teams[i].save(function (err) {
-    if (err) return handleError(err);
-  })
-};
-
-
-
-//Create Matches
-var Match = mongoose.model('match');
-
-Match.remove('match', function(err, result) {
-  if (err) return handleError(err);
-});
 
 var m1 = new Match({match_number: 1, home_team: fra, away_team: rou, time: '2016-06-10T20:00:00.000Z', group: group_a, score: {home: null, away: null}, mark: null});
 var m2 = new Match({match_number: 2, home_team: alb, away_team: che, time: '2016-06-11T14:00:00.000Z', group: group_a, score: {home: null, away: null}, mark: null});
@@ -151,38 +118,84 @@ var m36 = new Match({match_number: 36, home_team: swe, away_team: bel, time: '20
 
 var matches = [m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15, m16, m17, m18, m19, m20, m21, m22, m23, m24, m25, m26, m27, m28, m29, m30, m31, m32, m33, m34, m35, m36];
 
-for(var i in matches) {
-  matches[i].save(function (err) {
-    if (err) return handleError(err);
-  })
-};
 
 
-//Update teams with matches
-for (var i in teams) {
-  for (var j in matches) {
-    if (teams[i]._id === matches[j].home_team) {
-      teams[i].matches.push(matches[j]);
+async.series([
+    function(callback){
+        //Create Teams
+        for(var i in teams) {
+          teams[i].save(function (err) {
+            if (err) return handleError(err);
+          })
+        };
+        callback(null, 'Create Teams');
+    },
+    function(callback){
+      //Create Groups
+      var numberOfGroups = 0;
+      async.each(groups, function(group, callback2) {
+        group.save(function (err) {
+          if (err) return handleError(err);
+          else {
+            setTimeout(callback2, 2000);
+            numberOfGroups++;
+            console.log('groups added');
+            if (numberOfGroups === 6) {
+              console.log('ALL groups added');
+              callback(null, 'Create Groups');
+            }
+          }
+        })
+      })
+    },
+    function(callback){
+        //Update teams with groups
+        console.log('updating teams');
+        for (var i in teams) {
+          for (var j in groups) {
+            for (var k in groups[j].teams) {
+              if (groups[j].teams[k] === teams[i]._id) {
+                teams[i].group = groups[j];
+              }
+            }
+          }
+        }
+        for(var i in teams) {
+          teams[i].save(function (err) {
+            if (err) return handleError(err);
+          })
+        };
+        callback(null, 'Update teams with groups');
+    },
+    function(callback){
+        //Create Matches
+        for(var i in matches) {
+          matches[i].save(function (err) {
+            if (err) return handleError(err);
+          })
+        };
+        callback(null, 'Create Matches');
+    },
+    function(callback){
+        //Update teams with matches
+        for (var i in teams) {
+          for (var j in matches) {
+            if (teams[i]._id === matches[j].home_team) {
+              teams[i].matches.push(matches[j]);
+            }
+            else if (teams[i]._id === matches[j].away_team) {
+              teams[i].matches.push(matches[j]);
+            }
+          }
+        }
+        for(var i in teams) {
+          teams[i].save(function (err) {
+            if (err) return handleError(err);
+          })
+        };
+        callback(null, 'Update teams with matches');
     }
-    else if (teams[i]._id === matches[j].away_team) {
-      teams[i].matches.push(matches[j]);
-    }
-  }
-}
-for(var i in teams) {
-  teams[i].save(function (err) {
-    if (err) return handleError(err);
-  })
-};
-
-
-
-
-
-
-
-
-
+]);
 
 
 console.log('data created');
