@@ -40,14 +40,10 @@ router.get('/:id', function(req, res, next) {
 
 //create new tournament
 router.post('/', function(req, res, next) {
-  var owner_id = req.body.owner;
-  var tournament = {
-    name: req.body.name,
-    owner: req.body.owner,
-    users: [req.body.owner],
-    game_modes: req.body.game_modes,
-    points: req.body.points
-  };
+  var owner_id = req.body.tournament.owner;
+  var tournament = req.body.tournament;
+  tournament.users = [owner_id];
+  console.log(tournament);
 
   mongoose.model('tournament').create(tournament, function (err, tournament) {
     if (err) {
@@ -73,13 +69,15 @@ router.post('/', function(req, res, next) {
                     home: null,
                     away: null
                   },
-                  mark: null
+                  mark: null,
+                  user: owner_id,
+                  tournament: tournament
                 };
                 bets.push(bet);
               }
               var promise = mongoose.model('matchbet').create(bets);
               promise.then(function (matchbets) {
-                user.tournaments.push({tournament: tournament, match_bets: matchbets});
+                user.tournaments.push(tournament);
                 user.save(function(err) {
                   if (err) {
                     console.log('user update error');
@@ -144,13 +142,15 @@ router.put('/invite-user', function(req, res, next) {
                       home: null,
                       away: null
                     },
-                    mark: null
+                    mark: null,
+                    user: user,
+                    tournament: tournament
                   };
                   bets.push(bet);
                 }
                 var promise = mongoose.model('matchbet').create(bets);
                 promise.then(function (matchbets) {
-                  user.tournaments.push({tournament: tournament, match_bets: matchbets});
+                  user.tournaments.push(tournament);
                   user.save(function(err) {
                     if (err) {
                       console.log('user update error');

@@ -6,10 +6,7 @@ var userSchema = new Schema({
   password: String,
   email: { type: String, unique: true},
   isVerified: { type: Boolean, dafault: false},
-  tournaments: [{
-    tournament: { type: Schema.Types.ObjectId, ref: 'Tournament' },
-    match_bets: [{ type: Schema.Types.ObjectId, ref: 'MatchBet' }]
-  }]
+  tournaments: [{ type: Schema.Types.ObjectId, ref: 'Tournament' }]
 });
 
 var teamSchema = new Schema({
@@ -40,6 +37,8 @@ var matchSchema = new Schema({
 
 var matchbetSchema = new Schema({
   match: { type: Schema.Types.ObjectId, ref: 'Match' },
+  user: { type: Schema.Types.ObjectId, ref: 'User' },
+  tournament: { type: Schema.Types.ObjectId, ref: 'Tournament' },
   score: {
     home: Number,
     away: Number
@@ -55,7 +54,7 @@ var tournamentSchema = new Schema({
     goals: Boolean,
     mark: Boolean,
     eighth_finals: Boolean,
-    quater_finals: Boolean,
+    quarter_finals: Boolean,
     semi_finals: Boolean,
     finals: Boolean,
     winner: Boolean
@@ -65,7 +64,7 @@ var tournamentSchema = new Schema({
     mark: Number,
     extra: Number,
     eighth_finals: Number,
-    quater_finals: Number,
+    quarter_finals: Number,
     semi_finals: Number,
     finals: Number,
     winner: Number
