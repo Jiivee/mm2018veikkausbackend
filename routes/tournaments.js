@@ -9,7 +9,7 @@ var mongoose = require('mongoose');
 var router = require('../auth.js');
 var email = require('../email');
 
-mongoose.Promise = require('bluebird');
+//mongoose.Promise = require('bluebird');
 
 
 var populateQuery = [{path: 'owner', model: mongoose.model('user')}, {path: 'users', model: mongoose.model('user')}];
@@ -26,14 +26,15 @@ function containsObject(obj, list) {
 
 //All tournaments
 router.get('/', function(req, res, next) {
+  console.log('hello2');
   mongoose.model('tournament').find().populate(populateQuery).exec(function(err, tournaments) {
-    res.send(tournaments);
+    res.send('tournaments');
   })
 });
 
 //tournament by id
-router.get('/:id', function(req, res, next) {
-  mongoose.model('tournament').findOne({_id: req.params.id}).populate(populateQuery).exec(function(err, tournament) {
+router.get('/id/:tournamentId', function(req, res, next) {
+  mongoose.model('tournament').findOne({_id: req.params.tournamentId}).populate(populateQuery).exec(function(err, tournament) {
     res.send(tournament);
   })
 });

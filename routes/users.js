@@ -50,7 +50,13 @@ router.get('/:id', function(req, res, next) {
   mongoose.model('user').findOne({_id: req.params.id}).populate(populateQuery).exec(function(err, user) {
     //mongoose.model('matchbet').populate(user, populateMatchesQuery, function(err, user) {
       //mongoose.model('match').populate(user, populateTeamsQuery, function(err, user) {
-        res.send(user);
+        if (user) {
+          res.send(user);
+        }
+        else {
+          res.sendStatus(400);
+        }
+
       //})
     //})
   })
