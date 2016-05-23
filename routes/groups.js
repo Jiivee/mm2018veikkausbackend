@@ -7,7 +7,7 @@ var mongoose = require('mongoose');
 var router = express.Router();
 
 router.get('/', function(req, res, next) {
-  mongoose.model('group').find().populate({path: 'teams', model: mongoose.model('team')}).exec(function(err, groups) {
+  mongoose.model('group').find().populate({path: 'teams', model: mongoose.model('team')}).sort('name').exec(function(err, groups) {
     res.send(groups);
   })
 });
