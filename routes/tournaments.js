@@ -9,7 +9,7 @@ var mongoose = require('mongoose');
 var router = require('../auth.js');
 var email = require('../email');
 
-//mongoose.Promise = require('bluebird');
+mongoose.Promise = require('bluebird');
 
 
 var populateQuery = [{path: 'owner', model: mongoose.model('user')}, {path: 'users', model: mongoose.model('user')}];
@@ -77,6 +77,16 @@ router.post('/', function(req, res, next) {
                 bets.push(bet);
               }
               var promise = mongoose.model('matchbet').create(bets);
+              var rounds = [16, 8, 4, 2, 1];
+              rounds.map(function(round) {
+                var playoffbet = {
+                  user: owner_id,
+                  tournament: tournament,
+                  round_of: round,
+                  teams: []
+                }
+                mongoose.model('playoffbet').create(playoffbet);
+              });
               promise.then(function (matchbets) {
                 user.tournaments.push(tournament);
                 user.save(function(err) {
