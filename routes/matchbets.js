@@ -4,9 +4,10 @@
 
 var express = require('express');
 var mongoose = require('mongoose');
-//var router = express.Router();
+var router = express.Router();
 //ONLY Allow access for authenticated user:
-var router = require('../auth.js');
+var tokenChecker = require('../auth.js');
+router.use(tokenChecker);
 
 var async = require('async');
 

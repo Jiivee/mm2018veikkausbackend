@@ -4,9 +4,11 @@
 
 var express = require('express');
 var mongoose = require('mongoose');
-//var router = express.Router();
+var router = express.Router();
 //ONLY Allow access for authenticated user:
-var router = require('../auth.js');
+var tokenChecker = require('../auth.js');
+router.use(tokenChecker);
+
 var email = require('../email');
 
 mongoose.Promise = require('bluebird');
@@ -26,14 +28,13 @@ function containsObject(obj, list) {
 
 //All tournaments
 router.get('/', function(req, res, next) {
-  console.log('hello2');
   mongoose.model('tournament').find().populate(populateQuery).exec(function(err, tournaments) {
     res.send('tournaments');
   })
 });
 
 //tournament by id
-router.get('/id/:tournamentId', function(req, res, next) {
+router.get('/:tournamentId', function(req, res, next) {
   mongoose.model('tournament').findOne({_id: req.params.tournamentId}).populate(populateQuery).exec(function(err, tournament) {
     res.send(tournament);
   })
@@ -91,7 +92,6 @@ router.post('/', function(req, res, next) {
                 user: owner_id,
                 tournament: tournament
               };
-              console.log('create POOOOOOIIIIINNTTTTTSSSSSSSSSSSSSSSSSSSSSS');
               mongoose.model('points').create(points);
               promise.then(function (matchbets) {
                 user.tournaments.push(tournament);
@@ -122,87 +122,101 @@ router.post('/', function(req, res, next) {
 
 //invite user to tournament
 router.put('/invite-user', function(req, res, next) {
+  console.log('inviting user');
 
-  var tournament_id = req.body.tournament_id;
-  var user_email = req.body.user_email;
+  var tournamentId = req.body.tournamentId;
+  var email = req.body.email;
 
-  mongoose.model('tournament').findById(tournament_id, function(err, tournament) {
+  mongoose.model('tournament').findById(tournamentId, function(err, tournament) {
     if (!tournament)
       return next(new Error('Could not load tournament'));
     else {
-      mongoose.model('user').findOne({email: user_email}).exec(function(err, user) {
-        if (!user)
-          return next(new Error('Could not load user'));
+      mongoose.model('user').findOne({email: email}).exec()
+      .then(function(user) {
+        console.log(user);
+        if (!user) {
+          return mongoose.model('user').create({email: email})
+            .then(function(newUser) {
+              var userData = {
+                email: newUser.email
+              };
+              //mail.sentMailVerificationLink(userData, jwt.sign(userData, config.secret));
+              console.log('user did not exist, created new user: ' + newUser);
+              return newUser;
+            });
+        }
         else {
+          console.log('user found' + user);
           if (containsObject(user._id, tournament.users)) {
             return next(new Error('User already in tournament'));
           }
-          else {
-            tournament.users.push(user);
-            tournament.save(function(err) {
-              if (err)
-                console.log('user invite error');
-              else
-                console.log('user invite success');
-            });
+        }
+      })
+      .then(function(user) {
+        console.log('PROMISE THEN!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log(user);
+        tournament.users.push(user);
+        tournament.save(function(err) {
+          if (err)
+            console.log('user invite error');
+          else
+            console.log('user invite success');
+        });
 
-            var bets = [];
-            mongoose.model('match').find().exec(function(err, matches) {
-              if (err) {
-                console.log('find matches error: ', err);
+        var bets = [];
+        mongoose.model('match').find().exec(function(err, matches) {
+          if (err) {
+            console.log('find matches error: ', err);
+          }
+          else {
+            for (var match in matches) {
+              var bet = {
+                match: matches[match]._id,
+                score: {
+                  home: null,
+                  away: null
+                },
+                mark: null,
+                user: user,
+                tournament: tournament
+              };
+              bets.push(bet);
+            }
+            var promise = mongoose.model('matchbet').create(bets);
+            var rounds = [16, 8, 4, 2, 1];
+            rounds.map(function(round) {
+              var playoffbet = {
+                user: user,
+                tournament: tournament,
+                round_of: round,
+                teams: []
               }
-              else {
-                for (var match in matches) {
-                  var bet = {
-                    match: matches[match]._id,
-                    score: {
-                      home: null,
-                      away: null
-                    },
-                    mark: null,
-                    user: user,
-                    tournament: tournament
-                  };
-                  bets.push(bet);
+              mongoose.model('playoffbet').create(playoffbet);
+            });
+            var points = {
+              user: user,
+              tournament: tournament
+            };
+            mongoose.model('points').create(points);
+            promise.then(function (matchbets) {
+              user.tournaments.push(tournament);
+              user.save(function(err) {
+                if (err) {
+                  console.log('user update error');
+                  console.log(err);
                 }
-                var promise = mongoose.model('matchbet').create(bets);
-                var rounds = [16, 8, 4, 2, 1];
-                rounds.map(function(round) {
-                  var playoffbet = {
-                    user: user,
-                    tournament: tournament,
-                    round_of: round,
-                    teams: []
-                  }
-                  mongoose.model('playoffbet').create(playoffbet);
-                });
-                var points = {
-                  user: user,
-                  tournament: tournament
-                };
-                console.log('create POOOOOOIIIIINNTTTTTSSSSSSSSSSSSSSSSSSSSSS');
-                mongoose.model('points').create(points);
-                promise.then(function (matchbets) {
-                  user.tournaments.push(tournament);
-                  user.save(function(err) {
-                    if (err) {
-                      console.log('user update error');
-                      console.log(err);
-                    }
-                    else {
-                      console.log('user update success');
-                    }
-                  });
-                })
-                .catch(function(err){
-                  // just need one of these
-                  console.log('error:', err);
-                });
-              }
+                else {
+                  console.log('user update success');
+                }
+              });
+            })
+            .catch(function(err){
+              // just need one of these
+              console.log('error:', err);
             });
           }
-        }
-      });
+        });
+      })
     }
   });
 });

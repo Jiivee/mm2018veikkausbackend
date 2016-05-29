@@ -5,7 +5,7 @@ var authRoutes = express.Router();
 var jwt    = require('jsonwebtoken');
 var config = require('./config');
 
-authRoutes.use(function(req, res, next) {
+function checkToken(req, res, next) {
   // check header or url parameters or post parameters for token
   var token = req.body.token || req.headers['x-access-token'];
   // decode token
@@ -32,6 +32,6 @@ authRoutes.use(function(req, res, next) {
       message: 'No token provided.'
     });
   }
-});
+};
 
-module.exports = authRoutes;
+module.exports = checkToken;
