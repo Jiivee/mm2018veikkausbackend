@@ -48,14 +48,22 @@ var matchbetSchema = new Schema({
     home: Number,
     away: Number
   },
-  mark: String
+  mark: String,
+  points: { type: Number, default: 0 }
 });
 
 var playoffbetSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User' },
   tournament: { type: Schema.Types.ObjectId, ref: 'Tournament' },
   round_of: Number,
+  points: { type: Number, default: 0 },
   teams: [{ type: Schema.Types.ObjectId, ref: 'Team' }]
+});
+
+var pointsSchema = new Schema({
+  user: { type: Schema.Types.ObjectId, ref: 'User' },
+  tournament: { type: Schema.Types.ObjectId, ref: 'Tournament' },
+  points: { type: Number, default: 0 }
 });
 
 var tournamentSchema = new Schema({
@@ -90,4 +98,5 @@ mongoose.model('user', userSchema);
 mongoose.model('team', teamSchema);
 mongoose.model('match', matchSchema);
 mongoose.model('group', groupSchema);
+mongoose.model('points', pointsSchema);
 mongoose.model('tournament', tournamentSchema);

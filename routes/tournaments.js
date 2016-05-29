@@ -87,6 +87,12 @@ router.post('/', function(req, res, next) {
                 }
                 mongoose.model('playoffbet').create(playoffbet);
               });
+              var points = {
+                user: owner_id,
+                tournament: tournament
+              };
+              console.log('create POOOOOOIIIIINNTTTTTSSSSSSSSSSSSSSSSSSSSSS');
+              mongoose.model('points').create(points);
               promise.then(function (matchbets) {
                 user.tournaments.push(tournament);
                 user.save(function(err) {
@@ -160,6 +166,22 @@ router.put('/invite-user', function(req, res, next) {
                   bets.push(bet);
                 }
                 var promise = mongoose.model('matchbet').create(bets);
+                var rounds = [16, 8, 4, 2, 1];
+                rounds.map(function(round) {
+                  var playoffbet = {
+                    user: user,
+                    tournament: tournament,
+                    round_of: round,
+                    teams: []
+                  }
+                  mongoose.model('playoffbet').create(playoffbet);
+                });
+                var points = {
+                  user: user,
+                  tournament: tournament
+                };
+                console.log('create POOOOOOIIIIINNTTTTTSSSSSSSSSSSSSSSSSSSSSS');
+                mongoose.model('points').create(points);
                 promise.then(function (matchbets) {
                   user.tournaments.push(tournament);
                   user.save(function(err) {

@@ -39,6 +39,7 @@ var groups = require('./routes/groups');
 var tournaments = require('./routes/tournaments');
 var matchbets = require('./routes/matchbets');
 var playoffbets = require('./routes/playoffbets');
+var points = require('./routes/points');
 var authenticate = require('./routes/authenticate');
 var register = require('./routes/register');
 var verifyemail = require('./routes/verifyemail');
@@ -63,6 +64,7 @@ app.use('/tournaments', tournaments);
 app.use('/matchbets', matchbets);
 app.use('/playoffbets', playoffbets);
 app.use('/authenticate', authenticate);
+app.use('/points', points);
 app.use('/register', register);
 app.use('/verifyemail', verifyemail);
 
