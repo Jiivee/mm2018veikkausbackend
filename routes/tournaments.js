@@ -19,9 +19,11 @@ var populateQuery = [{path: 'owner', model: mongoose.model('user')}, {path: 'use
 function containsObject(obj, list) {
     var i;
     for (i = 0; i < list.length; i++) {
+      if (list[i] !== null) {
         if (list[i].toString() === obj.toString()) {
             return true;
         }
+      }
     }
     return false;
 }
@@ -88,6 +90,13 @@ router.post('/', function(req, res, next) {
                 }
                 mongoose.model('playoffbet').create(playoffbet);
               });
+              var topscorerbet = {
+                user: owner_id,
+                tournament: tournament,
+                goals: null,
+                player: null
+              };
+              mongoose.model('topscorerbet').create(topscorerbet);
               var points = {
                 user: owner_id,
                 tournament: tournament
@@ -147,9 +156,11 @@ router.put('/invite-user', function(req, res, next) {
         }
         else {
           console.log('user found' + user);
+          console.log(tournament);
           if (containsObject(user._id, tournament.users)) {
             return next(new Error('User already in tournament'));
           }
+          return user;
         }
       })
       .then(function(user) {
@@ -193,6 +204,13 @@ router.put('/invite-user', function(req, res, next) {
               }
               mongoose.model('playoffbet').create(playoffbet);
             });
+            var topscorerbet = {
+              user: user,
+              tournament: tournament,
+              goals: null,
+              player: null
+            };
+            mongoose.model('topscorerbet').create(topscorerbet);
             var points = {
               user: user,
               tournament: tournament
@@ -209,6 +227,7 @@ router.put('/invite-user', function(req, res, next) {
                   console.log('user update success');
                 }
               });
+              res.sendStatus(200);
             })
             .catch(function(err){
               // just need one of these

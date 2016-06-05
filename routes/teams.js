@@ -13,4 +13,10 @@ router.get('/', function(req, res, next) {
   })
 });
 
+router.get('/players', function(req, res, next) {
+  mongoose.model('team').find().populate([{path: 'players', model: mongoose.model('player')}]).sort('name').exec(function(err, teams) {
+    res.send(teams);
+  })
+});
+
 module.exports = router;

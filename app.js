@@ -39,10 +39,12 @@ var groups = require('./routes/groups');
 var tournaments = require('./routes/tournaments');
 var matchbets = require('./routes/matchbets');
 var playoffbets = require('./routes/playoffbets');
+var topscorerbets = require('./routes/topscorerbets');
 var points = require('./routes/points');
 var authenticate = require('./routes/authenticate');
 var register = require('./routes/register');
 var verifyemail = require('./routes/verifyemail');
+var saveresults = require('./routes/saveresults');
 
 var app = express();
 
@@ -63,10 +65,12 @@ app.use('/groups', groups);
 app.use('/tournaments', tournaments);
 app.use('/matchbets', matchbets);
 app.use('/playoffbets', playoffbets);
+app.use('/topscorerbets', topscorerbets);
 app.use('/authenticate', authenticate);
 app.use('/points', points);
 app.use('/register', register);
 app.use('/verifyemail', verifyemail);
+app.use('/saveresults', saveresults);
 
 
 

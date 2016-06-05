@@ -14,7 +14,12 @@ var teamSchema = new Schema({
   short_name: String,
   group: { type: Schema.Types.ObjectId, ref: 'Group' },
   matches: [{ type: Schema.Types.ObjectId, ref: 'Match' }],
+  players: [{ type: Schema.Types.ObjectId, ref: 'Player' }],
   flag: String
+});
+
+var playerSchema = new Schema({
+  name: String
 });
 
 var groupSchema = new Schema({
@@ -40,6 +45,11 @@ var playoffSchema = new Schema({
   teams: [{ type: Schema.Types.ObjectId, ref: 'Team' }]
 });
 
+var topscorerSchema = new Schema({
+  player: { type: Schema.Types.ObjectId, ref: 'Player' },
+  goals: Number
+});
+
 var matchbetSchema = new Schema({
   match: { type: Schema.Types.ObjectId, ref: 'Match' },
   user: { type: Schema.Types.ObjectId, ref: 'User' },
@@ -60,10 +70,21 @@ var playoffbetSchema = new Schema({
   teams: [{ type: Schema.Types.ObjectId, ref: 'Team' }]
 });
 
+var topscorerbetSchema = new Schema({
+  user: { type: Schema.Types.ObjectId, ref: 'User' },
+  tournament: { type: Schema.Types.ObjectId, ref: 'Tournament' },
+  player: { type: Schema.Types.ObjectId, ref: 'Player' },
+  player_team: { type: Schema.Types.ObjectId, ref: 'Team', default: null },
+  goals: Number
+});
+
 var pointsSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User' },
   tournament: { type: Schema.Types.ObjectId, ref: 'Tournament' },
-  points: { type: Number, default: 0 }
+  match_points: { type: Number, default: 0 },
+  playoff_points: { type: Number, default: 0 },
+  topscorer_points: { type: Number, default: 0 },
+  total_points: { type: Number, default: 0 }
 });
 
 var tournamentSchema = new Schema({
@@ -93,9 +114,12 @@ var tournamentSchema = new Schema({
 
 mongoose.model('matchbet', matchbetSchema);
 mongoose.model('playoffbet', playoffbetSchema);
+mongoose.model('topscorerbet', topscorerbetSchema);
+mongoose.model('topscorer', topscorerSchema);
 mongoose.model('playoff', playoffSchema);
 mongoose.model('user', userSchema);
 mongoose.model('team', teamSchema);
+mongoose.model('player', playerSchema);
 mongoose.model('match', matchSchema);
 mongoose.model('group', groupSchema);
 mongoose.model('points', pointsSchema);
