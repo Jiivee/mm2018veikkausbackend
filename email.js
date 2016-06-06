@@ -9,6 +9,8 @@ var sender = nodemailer.createTransport('SMTP', {
   }
 });
 
+var from = 'EURO 2016 Veikkaus';
+
 function mail(from, email, subject, message){
     var mailOptions = {
         from: from, // sender address
@@ -26,11 +28,21 @@ function mail(from, email, subject, message){
     });
 }
 
+exports.sentMailNewUserVerification = function(tournament, user, token) {
+  console.log('sending mail');
+  var message = "<p>You have been invited to " + tournament.name + " EURO 2016 betting by " + tournament.owner.name + ".</p>" +
+    "<p>Please please click the following link to create username and password and start betting!.<br/>" +
+    "<a href='" + config.server + "/newuser/" +
+    token + "'>Verification Link</a></p>";
+  mail(from, user.email , tournament.name + ' veikkaus' , message);
+}
+
 exports.sentMailVerificationLink = function(user, token) {
-  var from = "futisveikkaus2016";
   var message = "<p>Thank you for Registering on futisveikkaus2016</p>" +
     "<p>Please verify your email by clicking on the verification link below.<br/>" +
     "<a href='http://" + config.server + "/verifyemail/" +
     token + "'>Verification Link</a></p>";
   mail(from, user.email , "Account Verification", message);
 }
+
+

@@ -5,11 +5,13 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var router = express.Router();
+var config = require('../config');
+var jwt    = require('jsonwebtoken');
 //ONLY Allow access for authenticated user:
 var tokenChecker = require('../auth.js');
 router.use(tokenChecker);
 
-var email = require('../email');
+var mail = require('../email');
 
 mongoose.Promise = require('bluebird');
 
@@ -151,6 +153,10 @@ router.put('/invite-user', function(req, res, next) {
               };
               //mail.sentMailVerificationLink(userData, jwt.sign(userData, config.secret));
               console.log('user did not exist, created new user: ' + newUser);
+
+              console.log('email start here');
+              mail.sentMailNewUserVerification(tournament, userData, jwt.sign(userData, config.secret));
+
               return newUser;
             });
         }
@@ -166,75 +172,80 @@ router.put('/invite-user', function(req, res, next) {
       .then(function(user) {
         console.log('PROMISE THEN!!!!!!!!!!!!!!!!!!!!!!!');
         console.log(user);
-        tournament.users.push(user);
-        tournament.save(function(err) {
-          if (err)
-            console.log('user invite error');
-          else
-            console.log('user invite success');
-        });
+        if (user !== undefined) {
+          tournament.users.push(user);
+          tournament.save(function(err) {
+            if (err)
+              console.log('user invite error');
+            else
+              console.log('user invite success');
+          });
 
-        var bets = [];
-        mongoose.model('match').find().exec(function(err, matches) {
-          if (err) {
-            console.log('find matches error: ', err);
-          }
-          else {
-            for (var match in matches) {
-              var bet = {
-                match: matches[match]._id,
-                score: {
-                  home: null,
-                  away: null
-                },
-                mark: null,
+          var bets = [];
+          mongoose.model('match').find().exec(function(err, matches) {
+            if (err) {
+              console.log('find matches error: ', err);
+            }
+            else {
+              for (var match in matches) {
+                var bet = {
+                  match: matches[match]._id,
+                  score: {
+                    home: null,
+                    away: null
+                  },
+                  mark: null,
+                  user: user,
+                  tournament: tournament
+                };
+                bets.push(bet);
+              }
+              var promise = mongoose.model('matchbet').create(bets);
+              var rounds = [16, 8, 4, 2, 1];
+              rounds.map(function(round) {
+                var playoffbet = {
+                  user: user,
+                  tournament: tournament,
+                  round_of: round,
+                  teams: []
+                }
+                mongoose.model('playoffbet').create(playoffbet);
+              });
+              var topscorerbet = {
+                user: user,
+                tournament: tournament,
+                goals: null,
+                player: null
+              };
+              mongoose.model('topscorerbet').create(topscorerbet);
+              var points = {
                 user: user,
                 tournament: tournament
               };
-              bets.push(bet);
-            }
-            var promise = mongoose.model('matchbet').create(bets);
-            var rounds = [16, 8, 4, 2, 1];
-            rounds.map(function(round) {
-              var playoffbet = {
-                user: user,
-                tournament: tournament,
-                round_of: round,
-                teams: []
-              }
-              mongoose.model('playoffbet').create(playoffbet);
-            });
-            var topscorerbet = {
-              user: user,
-              tournament: tournament,
-              goals: null,
-              player: null
-            };
-            mongoose.model('topscorerbet').create(topscorerbet);
-            var points = {
-              user: user,
-              tournament: tournament
-            };
-            mongoose.model('points').create(points);
-            promise.then(function (matchbets) {
-              user.tournaments.push(tournament);
-              user.save(function(err) {
-                if (err) {
-                  console.log('user update error');
-                  console.log(err);
-                }
-                else {
-                  console.log('user update success');
-                }
+              mongoose.model('points').create(points);
+              promise.then(function (matchbets) {
+                user.tournaments.push(tournament);
+                user.save(function(err) {
+                  if (err) {
+                    console.log('user update error');
+                    console.log(err);
+                  }
+                  else {
+                    console.log('user update success');
+                  }
+                });
+                res.sendStatus(200);
+              })
+              .catch(function(err){
+                // just need one of these
+                console.log('error:', err);
               });
-              res.sendStatus(200);
-            })
-            .catch(function(err){
-              // just need one of these
-              console.log('error:', err);
-            });
-          }
-        });
+            }
+          });
+        }
+        else {
+          res.sendStatus(500);
+        }
       })
     }
   });

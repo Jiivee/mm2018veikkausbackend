@@ -5,7 +5,7 @@ var userSchema = new Schema({
   name: String,
   password: String,
   email: { type: String, unique: true},
-  isVerified: { type: Boolean, dafault: false},
+  isVerified: { type: Boolean, default: false},
   tournaments: [{ type: Schema.Types.ObjectId, ref: 'Tournament' }]
 });
 

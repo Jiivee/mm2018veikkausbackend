@@ -43,6 +43,7 @@ var topscorerbets = require('./routes/topscorerbets');
 var points = require('./routes/points');
 var authenticate = require('./routes/authenticate');
 var register = require('./routes/register');
+var newuser = require('./routes/newuser');
 var verifyemail = require('./routes/verifyemail');
 var saveresults = require('./routes/saveresults');
 
@@ -69,6 +70,7 @@ app.use('/topscorerbets', topscorerbets);
 app.use('/authenticate', authenticate);
 app.use('/points', points);
 app.use('/register', register);
+app.use('/newuser', newuser);
 app.use('/verifyemail', verifyemail);
 app.use('/saveresults', saveresults);
 

@@ -4,7 +4,7 @@ var config = {
     username: 'futisveikkaus2016@gmail.com',
     password: 'em2016ranska'
   },
-  server: 'localhost:3000'
+  server: 'https://euro2016veikkaus.herokuapp.com'
 };
 
 
