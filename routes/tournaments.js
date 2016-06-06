@@ -146,19 +146,17 @@ router.put('/invite-user', function(req, res, next) {
       .then(function(user) {
         console.log(user);
         if (!user) {
-          return mongoose.model('user').create({email: email})
-            .then(function(newUser) {
-              var userData = {
-                email: newUser.email
-              };
-              //mail.sentMailVerificationLink(userData, jwt.sign(userData, config.secret));
-              console.log('user did not exist, created new user: ' + newUser);
+          return mongoose.model('user').create({email: email}, function(err, newUser) {
+            var userData = {
+              email: newUser.email
+            };
+            //mail.sentMailVerificationLink(userData, jwt.sign(userData, config.secret));
+            console.log('user did not exist, created new user: ' + newUser);
 
-              console.log('email start here');
-              mail.sentMailNewUserVerification(tournament, userData, jwt.sign(userData, config.secret));
-
-              return newUser;
-            });
+            console.log('email start here');
+            mail.sentMailNewUserVerification(tournament, userData, jwt.sign(userData, config.secret));
+            return newUser;
+          })
         }
         else {
           console.log('user found' + user);
@@ -170,7 +168,6 @@ router.put('/invite-user', function(req, res, next) {
         }
       })
       .then(function(user) {
-        console.log('PROMISE THEN!!!!!!!!!!!!!!!!!!!!!!!');
         console.log(user);
         if (user !== undefined) {
           tournament.users.push(user);
