@@ -24,13 +24,17 @@ router.post('/', function(req, res, next) {
         user.name = name;
         user.password = password;
         user.save(function(err) {
-        if (err) {
-          console.log('user save error');
-        }
-        else {
-          console.log('user save success');
-        }
-      });
+          if (err) {
+            console.log('user save error');
+          }
+          else {
+            console.log('user save success');
+          }
+        });
+        res.sendStatus(200);
+      }
+      else {
+        res.sendStatus(409);
       }
     }
   });
