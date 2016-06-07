@@ -144,6 +144,7 @@ router.put('/invite-user', function(req, res, next) {
     else {
       mongoose.model('user').findOne({email: email}).exec()
       .then(function(user) {
+        console.log('user:');
         console.log(user);
         if (!user) {
           console.log('!user')
