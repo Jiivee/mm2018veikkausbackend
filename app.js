@@ -21,7 +21,7 @@ if (err) {
   }
 });
 */
-
+//asfdsaffdsa
 mongoose.connect('mongodb://heroku_n8tthvx3:gg52807ergarga789k8f20jmp1@ds033285.mongolab.com:33285/heroku_n8tthvx3');
 
 //load all files in models dir
