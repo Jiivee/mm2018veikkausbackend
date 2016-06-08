@@ -1,5 +1,7 @@
 var mongoose = require('mongoose');
 var Schema 	= mongoose.Schema;
+var bcrypt = require('bcrypt-nodejs');
+var SALT_WORK_FACTOR = 10;
 
 var userSchema = new Schema({
   name: String,
@@ -8,6 +10,37 @@ var userSchema = new Schema({
   isVerified: { type: Boolean, default: false},
   tournaments: [{ type: Schema.Types.ObjectId, ref: 'Tournament' }]
 });
+
+userSchema.pre('save', function(next) {
+    var user = this;
+    console.log('pre save');
+    // only hash the password if it has been modified (or is new)
+    if (!user.isModified('password')) return next();
+    console.log('pre next');
+    // generate a salt
+    bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
+        if (err) return next(err);
+        console.log(user.password);
+
+        // hash the password using our new salt
+        bcrypt.hash(user.password, salt, null, function(err, hash) {
+          console.log('next1');
+            if (err) return next(err);
+
+            // override the cleartext password with the hashed one
+            user.password = hash;
+            console.log('next');
+            next();
+        });
+    });
+});
+
+userSchema.methods.comparePassword = function(candidatePassword, cb) {
+    bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
+        if (err) return cb(err);
+        cb(null, isMatch);
+    });
+};
 
 var teamSchema = new Schema({
   name: String,

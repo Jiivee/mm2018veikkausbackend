@@ -144,9 +144,12 @@ router.put('/invite-user', function(req, res, next) {
     else {
       mongoose.model('user').findOne({email: email}).exec()
       .then(function(user) {
+        console.log('user:');
         console.log(user);
         if (!user) {
+          console.log('!user')
           return mongoose.model('user').create({email: email}, function(err, newUser) {
+            console.log('creating new user');
             var userData = {
               email: newUser.email
             };
@@ -168,6 +171,7 @@ router.put('/invite-user', function(req, res, next) {
         }
       })
       .then(function(user) {
+        console.log('after user been created');
         console.log(user);
         if (user !== undefined) {
           tournament.users.push(user);

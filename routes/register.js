@@ -12,6 +12,7 @@ router.post('/', function(req, res, next) {
   var email = req.body.email;
 
   mongoose.model('user').create({name: name, password: password, email: email}, function (err, user) {
+    console.log('creating new user');
     if (err) {
       res.sendStatus(409);
       return console.error(err);
@@ -23,7 +24,7 @@ router.post('/', function(req, res, next) {
         email: user.email
       }
       res.sendStatus(201);
-      mail.sentMailVerificationLink(userData, jwt.sign(userData, config.secret));
+      //mail.sentMailVerificationLink(userData, jwt.sign(userData, config.secret));
       console.log('added: ' + user);
       }
   });

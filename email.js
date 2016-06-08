@@ -34,7 +34,7 @@ exports.sentMailNewUserVerification = function(tournament, user, token) {
     "<p>Please please click the following link to create username and password and start betting!.<br/>" +
     "<a href='" + config.server + "/newuser/" +
     token + "'>Verification Link</a></p>";
-  mail(from, user.email , tournament.name + ' veikkaus' , message);
+  mail(from, user.email, tournament.name, message);
 }
 
 exports.sentMailVerificationLink = function(user, token) {
