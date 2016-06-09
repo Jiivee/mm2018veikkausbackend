@@ -13,7 +13,7 @@ var async = require('async');
 
 
 router.get('/:userId/:tournamentId', function(req, res, next) {
-  mongoose.model('playoffbet').find({tournament: req.params.tournamentId, user: req.params.userId}).sort('-round_of').exec(function(err, playoffbets) {
+  mongoose.model('playoffbet').find({tournament: req.params.tournamentId, user: req.params.userId}).populate({path: 'teams', model: mongoose.model('team')}).sort('-round_of').exec(function(err, playoffbets) {
     res.send(playoffbets);
   })
 })

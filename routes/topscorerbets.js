@@ -10,7 +10,7 @@ var tokenChecker = require('../auth.js');
 router.use(tokenChecker);
 
 router.get('/:userId/:tournamentId', function(req, res, next) {
-  mongoose.model('topscorerbet').findOne({tournament: req.params.tournamentId, user: req.params.userId}).exec(function(err, topscorerbet) {
+  mongoose.model('topscorerbet').findOne({tournament: req.params.tournamentId, user: req.params.userId}).populate([{path: 'user', model: mongoose.model('user')}, {path: 'player', model: mongoose.model('player')}]).exec(function(err, topscorerbet) {
     res.send(topscorerbet);
   })
 })
