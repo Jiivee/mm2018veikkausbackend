@@ -40,7 +40,7 @@ router.get('/calculate', function(req, res, next) {
 });
 
 router.get('/:tournamentId', function(req, res, next) {
-  mongoose.model('points').find({tournament: req.params.tournamentId}).populate(populateQuery).exec(function(err, points) {
+  mongoose.model('points').find({tournament: req.params.tournamentId}).populate(populateQuery).sort('-total_points').exec(function(err, points) {
     res.send(points);
   })
 })
