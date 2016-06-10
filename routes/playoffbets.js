@@ -18,6 +18,12 @@ router.get('/:userId/:tournamentId', function(req, res, next) {
   })
 })
 
+router.get('/:userId/:tournamentId/teams', function(req, res, next) {
+  mongoose.model('playoffbet').find({tournament: req.params.tournamentId, user: req.params.userId}).populate({path: 'teams', model: mongoose.model('team')}).sort('-round_of').exec(function(err, playoffbets) {
+    res.send(playoffbets);
+  })
+})
+
 router.get('/:userId/:tournamentId/:round_of/team-ids', function(req, res, next) {
   mongoose.model('playoffbet').find({tournament: req.params.tournamentId, user: req.params.userId, round_of: req.params.round_of}).exec(function(err, playoffbets) {
     res.send(playoffbets);
@@ -25,6 +31,8 @@ router.get('/:userId/:tournamentId/:round_of/team-ids', function(req, res, next)
 })
 
 router.put('/', function(req, res, next) {
+  res.sendStatus(403);
+  /*
   var bets = req.body;
   async.each(bets, function(bet, callback) {
     console.log(bet);
@@ -43,6 +51,7 @@ router.put('/', function(req, res, next) {
     });
   });
   res.sendStatus(200);
+  */
 });
 
 module.exports = router;
