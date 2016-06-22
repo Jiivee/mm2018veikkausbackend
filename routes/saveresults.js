@@ -46,7 +46,6 @@ router.put('/playoff', function(req, res, next) {
       });
     })
     mongoose.model('playoffbet').find({round_of: round.round_of}).exec(function(err, playoffbets) {
-      console.log(playoffbets);
       roundTeams = round.teams;
       playoffbets.map(function(playoffbet) {
         var playoffPoints = 0;
@@ -72,13 +71,9 @@ router.put('/playoff', function(req, res, next) {
           }
         })
         playoffbet.points = playoffPoints;
-        console.log(playoffPoints);
         playoffbet.save(function(err) {
           if (err) {
             console.log('playoffbet points save error');
-          }
-          else {
-            console.log('playoffbet points save success');
           }
         });
       })
@@ -129,9 +124,6 @@ router.put('/match/:id', function(req, res, next) {
         matchbet.save(function(err) {
         if (err) {
           console.log('matchbet points save error');
-        }
-        else {
-          console.log('matchbet points save success');
         }
         });
       })

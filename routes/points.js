@@ -28,9 +28,7 @@ router.get('/calculate', function(req, res, next) {
       })
       promise.then(function() {
         var promise2 = mongoose.model('playoffbet').find({tournament: tournament, user: user}).exec(function(err, playoffbets) {
-          console.log('PLAYOFFBET POINTS')
           playoffbets.map(function(playoffbet) {
-            console.log(playoffbet.points);
             playoffbetPoints += playoffbet.points;
           })
         })
@@ -39,7 +37,6 @@ router.get('/calculate', function(req, res, next) {
             console.log('count topscorerbet');
           })
           promise3.then(function() {
-            console.log(matchbetPoints);
             point.match_points = matchbetPoints;
             point.playoff_points = playoffbetPoints;
             point.topscorer_points = topscorerPoints;
