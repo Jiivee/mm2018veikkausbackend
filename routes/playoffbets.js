@@ -11,6 +11,17 @@ router.use(tokenChecker);
 
 var async = require('async');
 
+var populateQuery = [
+  {path: 'teams', model: mongoose.model('team')},
+  {path: 'user', model: mongoose.model('user')}
+];
+
+
+router.get('/:tournamentId', function(req, res, next) {
+  mongoose.model('playoffbet').find({tournament: req.params.tournamentId}).populate(populateQuery).sort('-round_of').exec(function(err, playoffbets) {
+    res.send(playoffbets);
+  })
+})
 
 router.get('/:userId/:tournamentId', function(req, res, next) {
   mongoose.model('playoffbet').find({tournament: req.params.tournamentId, user: req.params.userId}).sort('-round_of').exec(function(err, playoffbets) {

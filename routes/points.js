@@ -19,20 +19,39 @@ router.get('/calculate', function(req, res, next) {
       var user = point.user;
       var tournament = point.tournament;
       var matchbetPoints = 0;
+      var playoffbetPoints = 0;
+      var topscorerPoints = 0;
       var promise = mongoose.model('matchbet').find({tournament: tournament, user: user}).exec(function(err, matchbets) {
         matchbets.map(function(matchbet) {
           matchbetPoints += matchbet.points;
         })
       })
       promise.then(function() {
-        console.log(matchbetPoints);
-        point.match_points = matchbetPoints;
-        point.total_points = matchbetPoints;
-        point.save(function(err) {
-          if (err) {
-            console.log('total points save error');
-          }
-        });
+        var promise2 = mongoose.model('playoffbet').find({tournament: tournament, user: user}).exec(function(err, playoffbets) {
+          console.log('PLAYOFFBET POINTS')
+          playoffbets.map(function(playoffbet) {
+            console.log(playoffbet.points);
+            playoffbetPoints += playoffbet.points;
+          })
+        })
+        promise2.then(function() {
+          var promise3 = mongoose.model('topscorerbet').find({tournament: tournament, user: user}).exec(function(err, topscorerbet) {
+            console.log('count topscorerbet');
+          })
+          promise3.then(function() {
+            console.log(matchbetPoints);
+            point.match_points = matchbetPoints;
+            point.playoff_points = playoffbetPoints;
+            point.topscorer_points = topscorerPoints;
+            var total = matchbetPoints + playoffbetPoints + topscorerPoints;
+            point.total_points = total;
+            point.save(function(err) {
+              if (err) {
+                console.log('total points save error');
+              }
+            });
+          })
+        })
       })
     })
   })

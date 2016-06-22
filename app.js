@@ -21,7 +21,6 @@ if (err) {
   }
 });
 */
-//asfdsaffdsa
 mongoose.connect('mongodb://heroku_n8tthvx3:gg52807ergarga789k8f20jmp1@ds033285.mongolab.com:33285/heroku_n8tthvx3');
 
 //load all files in models dir
@@ -36,6 +35,7 @@ var users = require('./routes/users');
 var matches = require('./routes/matches');
 var teams = require('./routes/teams');
 var groups = require('./routes/groups');
+var playoffs = require('./routes/playoffs');
 var tournaments = require('./routes/tournaments');
 var matchbets = require('./routes/matchbets');
 var playoffbets = require('./routes/playoffbets');
@@ -63,6 +63,7 @@ app.use('/users', users);
 app.use('/matches', matches);
 app.use('/teams', teams);
 app.use('/groups', groups);
+app.use('/playoffs', playoffs);
 app.use('/tournaments', tournaments);
 app.use('/matchbets', matchbets);
 app.use('/playoffbets', playoffbets);
