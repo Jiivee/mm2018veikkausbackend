@@ -19,6 +19,39 @@ var populateQuery = [
 
 router.get('/:tournamentId', function(req, res, next) {
   mongoose.model('playoffbet').find({tournament: req.params.tournamentId}).populate(populateQuery).sort('-round_of').exec(function(err, playoffbets) {
+    playoffbets.map(function(playoffbet) {
+      if (playoffbet.user !== null && playoffbet.user.name !== undefined) {
+        results.push(playoffbet);
+      }
+    })
+    results.sort(function(a, b) {
+      if (a.round_of > b.round_of) {
+        return -1;
+      }
+      if (a.round_of < b.round_of) {
+        return 1;
+      }
+      if (a.user.name < b.user.name) {
+        return -1;
+      }
+      if (a.user.name > b.user.name) {
+        return 1;
+      }
+      return 0;
+    });
+    results.map(function(result) {
+      result.teams.sort(function(c, d) {
+        if (c.short_name < d.short_name) {
+        return -1;
+        }
+        if (c.short_name > d.short_name) {
+          return 1;
+        }
+        return 0;
+      })
+    })
+
+
     res.send(playoffbets);
   })
 })
