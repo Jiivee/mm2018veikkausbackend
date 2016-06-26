@@ -51,7 +51,7 @@ router.get('/:tournamentId', function(req, res, next) {
         return 0;
       });
     });
-    res.send(playoffbets);
+    res.send(results);
   })
 })
 
