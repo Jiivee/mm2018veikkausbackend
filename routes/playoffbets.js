@@ -19,6 +19,7 @@ var populateQuery = [
 
 router.get('/:tournamentId', function(req, res, next) {
   mongoose.model('playoffbet').find({tournament: req.params.tournamentId}).populate(populateQuery).sort('-round_of').exec(function(err, playoffbets) {
+    results = [];
     playoffbets.map(function(playoffbet) {
       if (playoffbet.user !== null && playoffbet.user.name !== undefined) {
         results.push(playoffbet);
