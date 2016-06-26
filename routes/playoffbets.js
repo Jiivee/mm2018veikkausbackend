@@ -23,7 +23,7 @@ router.get('/:tournamentId', function(req, res, next) {
       if (playoffbet.user !== null && playoffbet.user.name !== undefined) {
         results.push(playoffbet);
       }
-    })
+    });
     results.sort(function(a, b) {
       if (a.round_of > b.round_of) {
         return -1;
@@ -48,10 +48,8 @@ router.get('/:tournamentId', function(req, res, next) {
           return 1;
         }
         return 0;
-      })
-    })
-
-
+      });
+    });
     res.send(playoffbets);
   })
 })
