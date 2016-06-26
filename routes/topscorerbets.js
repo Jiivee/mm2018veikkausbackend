@@ -15,6 +15,27 @@ router.get('/:userId/:tournamentId', function(req, res, next) {
   })
 })
 
+router.get('/:tournamentId', function(req, res, next) {
+  mongoose.model('topscorerbet').find({tournament: req.params.tournamentId}).populate([{path: 'user', model: mongoose.model('user')}, {path: 'player', model: mongoose.model('player')}]).exec(function(err, topscorerbets) {
+    results = [];
+    topscorerbets.map(function(topscorerbet) {
+      if (topscorerbet.user !== null && topscorerbet.user.name !== undefined) {
+        results.push(topscorerbet);
+      }
+    });
+    results.sort(function(a, b) {
+      if (a.user.name < b.user.name) {
+        return -1;
+      }
+      if (a.user.name > b.user.name) {
+        return 1;
+      }
+      return 0;
+    });
+    res.send(results);
+  })
+})
+
 router.put('/', function(req, res, next) {
   res.sendStatus(403);
   /*
