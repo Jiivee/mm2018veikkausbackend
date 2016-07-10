@@ -12,7 +12,7 @@ var config = require('./config');
 
 var cors = require('cors');
 
-/*
+
 mongoose.connect('mongodb://localhost/fv', function(err, db) {
 if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
@@ -20,8 +20,8 @@ if (err) {
     console.log('Connection established');
   }
 });
-*/
-mongoose.connect('mongodb://heroku_n8tthvx3:gg52807ergarga789k8f20jmp1@ds033285.mongolab.com:33285/heroku_n8tthvx3');
+
+//mongoose.connect('mongodb://heroku_n8tthvx3:gg52807ergarga789k8f20jmp1@ds033285.mongolab.com:33285/heroku_n8tthvx3');
 
 //load all files in models dir
 fs.readdirSync(__dirname + '/models').forEach(function(filename){
@@ -40,6 +40,7 @@ var tournaments = require('./routes/tournaments');
 var matchbets = require('./routes/matchbets');
 var playoffbets = require('./routes/playoffbets');
 var topscorerbets = require('./routes/topscorerbets');
+var topscorer = require('./routes/topscorer');
 var points = require('./routes/points');
 var authenticate = require('./routes/authenticate');
 var register = require('./routes/register');
@@ -68,6 +69,7 @@ app.use('/tournaments', tournaments);
 app.use('/matchbets', matchbets);
 app.use('/playoffbets', playoffbets);
 app.use('/topscorerbets', topscorerbets);
+app.use('/topscorer', topscorer);
 app.use('/authenticate', authenticate);
 app.use('/points', points);
 app.use('/register', register);

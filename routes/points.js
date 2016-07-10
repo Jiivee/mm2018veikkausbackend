@@ -33,8 +33,8 @@ router.get('/calculate', function(req, res, next) {
           })
         })
         promise2.then(function() {
-          var promise3 = mongoose.model('topscorerbet').find({tournament: tournament, user: user}).exec(function(err, topscorerbet) {
-            console.log('count topscorerbet');
+          var promise3 = mongoose.model('topscorerbet').findOne({tournament: tournament, user: user}).exec(function(err, topscorerbet) {
+            topscorerPoints = topscorerbet.points;
           })
           promise3.then(function() {
             point.match_points = matchbetPoints;

@@ -21,6 +21,10 @@ var PLAYOFF_POINTS = {
   ROUND_OF_1: 13
 };
 
+var TOPSCORER_POINTS = {
+  PLAYER: 13,
+  GOALS: 5
+}
 
 function containsObject(obj, list) {
   var i;
@@ -33,6 +37,50 @@ function containsObject(obj, list) {
   }
   return false;
 }
+
+router.put('/topscorer', function(req, res, next) {
+  var data = req.body;
+  console.log(data);
+  mongoose.model('topscorer').findOne().exec(function(err, topscorer) {
+    topscorer.player = data.player;
+    topscorer.goals = data.goals;
+    topscorer.save(function(err) {
+      if (err) {
+        console.log('topscorer save error');
+      }
+      else {
+        console.log('topscorer save success');
+      }
+    });
+    mongoose.model('topscorerbet').find().exec(function(err, topscorerbets) {
+      topscorerbets.map(function(topscorerbet) {
+        var topscorerbetPoints = 0;
+        var a = '';
+        a+= topscorerbet.player;
+        console.log(JSON.stringify(data.player));
+        console.log(JSON.stringify(topscorerbet.player));
+        console.log(a);
+        console.log(typeof a);
+        console.log(JSON.stringify(topscorerbet.player) === JSON.stringify(data.player));
+        if (JSON.stringify(topscorerbet.player) === JSON.stringify(data.player)) {
+          console.log('PLAYERRRR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+          topscorerbetPoints += TOPSCORER_POINTS.PLAYER;
+        }
+        if (topscorerbet.goals === data.goals) {
+          console.log('GOALLLSSSS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+          topscorerbetPoints += TOPSCORER_POINTS.GOALS;
+        }
+        topscorerbet.points = topscorerbetPoints;
+        topscorerbet.save(function(err) {
+          if (err) {
+            console.log('topscorerbet points save error');
+          }
+        });
+      })
+    })
+  });
+  res.sendStatus(200);
+})
 
 router.put('/playoff', function(req, res, next) {
   var rounds = req.body;

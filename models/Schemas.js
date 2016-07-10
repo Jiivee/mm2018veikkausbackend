@@ -79,7 +79,7 @@ var playoffSchema = new Schema({
 });
 
 var topscorerSchema = new Schema({
-  player: { type: Schema.Types.ObjectId, ref: 'Player' },
+  player: { type: Schema.Types.ObjectId, ref: 'Player', default: null },
   goals: Number
 });
 
@@ -108,7 +108,8 @@ var topscorerbetSchema = new Schema({
   tournament: { type: Schema.Types.ObjectId, ref: 'Tournament' },
   player: { type: Schema.Types.ObjectId, ref: 'Player' },
   player_team: { type: Schema.Types.ObjectId, ref: 'Team', default: null },
-  goals: Number
+  goals: Number,
+  points: { type: Number, default: 0 }
 });
 
 var pointsSchema = new Schema({
