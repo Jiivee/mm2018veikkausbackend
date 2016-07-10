@@ -4,9 +4,9 @@ check that user has verified the account
 fix verification link stuff:
  - when user registers himself
  - when user is invited to tournament while not being registered
--> user.verified when user has registered himself, user.missing_info when being invited
+-> user.verified when user has registered himself
 create pages for:
- - adding user name and password for accounts that have been invited to tournaments
  - restore password
-encrypt passwords
+
+
 
