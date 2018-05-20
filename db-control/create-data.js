@@ -7,7 +7,8 @@ var Schema  = mongoose.Schema;
 var async = require('async');
 mongoose.Promise = require('bluebird');
 
-mongoose.connect('mongodb://localhost/fv2018', function(err, db) {
+//mongoose.connect('mongodb://localhost/fv2018', function(err, db) {
+mongoose.connect('mongodb://heroku_123qwe123:1234567890qwertyuiop@ds129540.mlab.com:29540/heroku_332d9v6w', function(err, db) {  
 if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
   } else {

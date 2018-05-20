@@ -10,18 +10,18 @@ var config = require('./config');
 
 var cors = require('cors');
 
-console.log('hello')
-mongoose.connect('mongodb://localhost/fv2018', function(err, db) {
-	console.log('hello')
-	console.log(err)
 
-if (err) {
+//mongoose.connect('mongodb://localhost/fv2018', function(err, db) {  
+mongoose.connect('mongodb://heroku_123qwe123:1234567890qwertyuiop@ds129540.mlab.com:29540/heroku_332d9v6w', function(err, db) {  
+  if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
   } else {
     console.log('Connection established');
   }
 });
 
+
+//NEW mongoose.connect('mongodb://heroku_123qwe123:1234567890qwertyuiop@ds129540.mlab.com:29540/heroku_332d9v6w');
 //mongoose.connect('mongodb://heroku_n8tthvx3:gg52807ergarga789k8f20jmp1@ds033285.mongolab.com:33285/heroku_n8tthvx3');
 
 require('./models/Schemas')
