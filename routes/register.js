@@ -2,7 +2,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var jwt    = require('jsonwebtoken');
 var config = require('../config');
-var mail = require('../email');
+//var mail = require('../email');
 
 var router = express.Router();
 

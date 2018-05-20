@@ -4,7 +4,6 @@
 
 var mongoose = require('mongoose');
 var Schema  = mongoose.Schema;
-var fs = require('fs');
 
 mongoose.connect('mongodb://localhost/fv2018', function(err, db) {
 if (err) {
@@ -14,18 +13,14 @@ if (err) {
   }
 });
 
-//load all files in models dir
-fs.readdirSync('../models/').forEach(function(filename){
-  if(~filename.indexOf('.js')) {
-    require('../models/' + filename)
-  }
-})
+require('../models/Schemas')
 
 //Greate Teams
-var Tournament = mongoose.model('tournament');
-var User = mongoose.model('user');
-var MatchBet = mongoose.model('matchbet');
-
+var Team = mongoose.model('team');
+var Group = mongoose.model('group');
+var Match = mongoose.model('match');
+var Player = mongoose.model('player');
+/*
 if (process.argv.slice(2)[0] == 'tournament') {
   Tournament.remove('tournament', function(err, result) {
     if (err) return err;
@@ -46,18 +41,24 @@ if (process.argv.slice(2)[0] == 'matchbet') {
   });
   console.log('Deleted matchbets');
 }
-
+*/
 if (process.argv.slice(2)[0] == 'all') {
-  User.remove('user', function(err, result) {
+  Team.remove('team', function(err, result) {
     if (err) return err;
+    console.log('Deleted teams');
   });
-  Tournament.remove('tournament', function(err, result) {
+  Group.remove('group', function(err, result) {
     if (err) return err;
+    console.log('Deleted groups');
   });
-  MatchBet.remove('matchbet', function(err, result) {
+  Match.remove('match', function(err, result) {
     if (err) return err;
+    console.log('Deleted matches');
   });
-  console.log('Deleted users, tournaments and matchbets');
+  Player.remove('player', function(err, result) {
+    if (err) return err;
+    console.log('Deleted players');
+  });
 }
 
 mongoose.connection.close()

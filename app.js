@@ -1,38 +1,34 @@
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var fs = require('fs');
 
 var jwt    = require('jsonwebtoken'); // used to create, sign, and verify tokens
 var config = require('./config');
 
 var cors = require('cors');
 
-/*
-mongoose.connect('mongodb://localhost/fv', function(err, db) {
+console.log('hello')
+mongoose.connect('mongodb://localhost/fv2018', function(err, db) {
+	console.log('hello')
+	console.log(err)
+
 if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
   } else {
     console.log('Connection established');
   }
 });
-*/
-mongoose.connect('mongodb://heroku_n8tthvx3:gg52807ergarga789k8f20jmp1@ds033285.mongolab.com:33285/heroku_n8tthvx3');
 
-//load all files in models dir
-fs.readdirSync(__dirname + '/models').forEach(function(filename){
-  if(~filename.indexOf('.js')) {
-    require(__dirname + '/models/' + filename)
-  }
-})
+//mongoose.connect('mongodb://heroku_n8tthvx3:gg52807ergarga789k8f20jmp1@ds033285.mongolab.com:33285/heroku_n8tthvx3');
+
+require('./models/Schemas')
 
 //var routes = require('./routes/index');
-var users = require('./routes/users');
 var matches = require('./routes/matches');
+var users = require('./routes/users');
 var teams = require('./routes/teams');
 var groups = require('./routes/groups');
 var playoffs = require('./routes/playoffs');
@@ -60,9 +56,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-app.use('/users', users);
 app.use('/matches', matches);
 app.use('/teams', teams);
+app.use('/users', users);
 app.use('/groups', groups);
 app.use('/playoffs', playoffs);
 app.use('/tournaments', tournaments);
@@ -76,10 +72,6 @@ app.use('/register', register);
 app.use('/newuser', newuser);
 app.use('/verifyemail', verifyemail);
 app.use('/saveresults', saveresults);
-
-
-
-
 
 
 port = process.env.PORT || 3002;

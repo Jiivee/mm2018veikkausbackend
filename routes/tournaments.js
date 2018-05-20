@@ -11,7 +11,7 @@ var jwt    = require('jsonwebtoken');
 var tokenChecker = require('../auth.js');
 router.use(tokenChecker);
 
-var mail = require('../email');
+//var mail = require('../email');
 
 mongoose.Promise = require('bluebird');
 
@@ -157,7 +157,7 @@ router.put('/invite-user', function(req, res, next) {
             console.log('user did not exist, created new user: ' + newUser);
 
             console.log('email start here');
-            mail.sentMailNewUserVerification(tournament, userData, jwt.sign(userData, config.secret));
+            //mail.sentMailNewUserVerification(tournament, userData, jwt.sign(userData, config.secret));
             return newUser;
           })
         }
